@@ -19,11 +19,11 @@ aout=$(dir_build)/remany
 all: $(SOURCES) $(aout)
 
 $(aout): $(dir_build) $(OBJECTS)
-	$(CC) $(OBJECTS) $(link_flags) -o $(aout) $(addprefix -l,$(extra_libs)) $(gtk_libs)
+	$(CC) $(OBJECTS) $(link_flags) $(CFLAGS) -o $(aout) $(addprefix -l,$(extra_libs)) $(gtk_libs)
 	chmod 0755 $(aout)
 
 $(OBJECTS): $(dir_build)/%.o: $(dir_src)/%.c $(HEADERS)
-	$(CC) $< $(obj_flags) -o $@ -I $(dir_include) $(gtk_cflags)
+	$(CC) $< $(obj_flags) $(CFLAGS) -o $@ -I $(dir_include) $(gtk_cflags)
 
 $(dir_build):
 	mkdir $@
