@@ -5,12 +5,15 @@ link_flags = -fPIC -g
 
 aout=build/remany
 
-remany: main.o
+remany: main.o log.o
 	$(CC) build/*.o $(link_flags) -o $(aout) -ldl $(gtk_libs)
 	chmod 0755 $(aout)
 
 main.o: build src/main.c
 	$(CC) -c src/main.c $(obj_flags) -o build/main.o -I include $(gtk_cflags)
+
+log.o: build src/log.c
+	$(CC) -c src/log.c $(obj_flags) -o build/log.o -I include $(gtk_cflags)
 
 build:
 	mkdir build

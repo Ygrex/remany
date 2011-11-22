@@ -1,4 +1,4 @@
-#include <main.h>
+#include "main.h"
 
 /* {{{ dnd_motion_canvas(…) - handle "drag-motion" for the canvas */
 static gboolean dnd_motion_canvas(
