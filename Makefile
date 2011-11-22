@@ -1,20 +1,33 @@
+extra_libs = dl
 gtk_cflags := $(shell pkg-config --cflags gtk+-3.0)
 gtk_libs := $(shell pkg-config --libs gtk+-3.0)
 obj_flags = -Wall -Wextra -g -c
 link_flags = -fPIC -g
 
-aout=build/remany
+dir_build=build
+dir_src=src
+dir_include=include
 
-remany: main.o log.o
-	$(CC) build/*.o $(link_flags) -o $(aout) -ldl $(gtk_libs)
+OBJECTS=$(addprefix $(dir_build)/,main.o log.o)
+HEADERS=$(addprefix $(dir_include)/,main.h log.h)
+
+aout=$(dir_build)/remany
+
+.PHONY : all
+.PHONY : clean
+
+all: $(SOURCES) $(aout)
+
+$(aout): $(dir_build) $(OBJECTS)
+	$(CC) $(OBJECTS) $(link_flags) -o $(aout) $(addprefix -l,$(extra_libs)) $(gtk_libs)
 	chmod 0755 $(aout)
 
-main.o: build src/main.c
-	$(CC) -c src/main.c $(obj_flags) -o build/main.o -I include $(gtk_cflags)
+$(OBJECTS): $(dir_build)/%.o: $(dir_src)/%.c $(HEADERS)
+	$(CC) $< $(obj_flags) -o $@ -I $(dir_include) $(gtk_cflags)
 
-log.o: build src/log.c
-	$(CC) -c src/log.c $(obj_flags) -o build/log.o -I include $(gtk_cflags)
+$(dir_build):
+	mkdir $@
 
-build:
-	mkdir build
+clean:
+	rm -rf $(dir_build)
 
