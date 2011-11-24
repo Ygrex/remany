@@ -1,0 +1,10 @@
+pre-requisites:
+	GNU system
+	GTK+
+
+build:
+	make
+
+run:
+	./build/remany
+
