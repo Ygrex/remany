@@ -1,3 +1,7 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
 #include "log.h"
 
 /* {{{ output(…) - output formatted message to stderr */
@@ -40,7 +44,7 @@ static char *output(const char *prefix, char *msg) {
 char *warn(char *msg) { return output("WW", msg) ; }
 /* }}} warn() */
 
-/* {{{ warn(…) - output warning */
+/* {{{ debug(…) - output debug message */
 char *debug(char *msg) { return output("DD", msg) ; }
-/* }}} warn() */
+/* }}} debug() */
 

@@ -1,3 +1,10 @@
+#include <gtk/gtk.h>
+#include <stdlib.h>
+
+#include "data.h"
+#include "log.h"
+#include "sprite.h"
+
 #include "main.h"
 
 /* {{{ dnd_motion_canvas(…) - handle "drag-motion" for the canvas */
@@ -30,6 +37,7 @@ static gint ctx_targets_types(GdkDragContext *ctx) {
 		warn("ctx_targets_types(): g_list_first()");
 		goto LBL_ctx_targets_types;
 	}
+	/* should fail with len = 0 */
 	GdkAtom *targets = malloc(sizeof(GdkAtom) * len);
 	if (!targets) {
 		warn("ctx_targets_types(): malloc()");
@@ -38,6 +46,7 @@ static gint ctx_targets_types(GdkDragContext *ctx) {
 	GdkAtom *t = targets;
 	do {
 		*(t++) = GDK_POINTER_TO_ATOM(list->data);
+		g_free( debug( (char *) gdk_atom_name(t[-1]) ) );
 	} while ( (list = g_list_next(list)) );
 	ret =
 		weight(Data_Image,
@@ -76,24 +85,14 @@ static void create_sprite(
 	(void)targets;
 	(void)time;
 	(void)ud;
-	if (! (targets & Data_Image)) {
-		warn("Only images are accepted for now.");
-		goto LBL_create_sprite;
-	}
-	GdkPixbuf *pic = gtk_selection_data_get_pixbuf(data);
-	if (pic == NULL) {
-		warn("Image data has not been converted.");
-		goto LBL_create_sprite;
-	}
-	/* FIXME animated images should be supported as well */
-	GtkWidget *widget = gtk_image_new_from_pixbuf(pic);
-	if (widget == NULL) {
-		warn("GtkImage widget creation failed.");
+	Sprite *sprite = new_sprite(data, targets, time, ud);
+	if (sprite == NULL) {
+		warn("create_sprite(): new_sprite()");
 		goto LBL_create_sprite;
 	}
 	/* FIXME naive assumption the canvas is of GtkFixed */
-	gtk_fixed_put((GtkFixed *)canvas, widget, x, y);
-	gtk_widget_show(widget);
+	gtk_fixed_put((GtkFixed *)canvas, sprite->widget, x, y);
+	gtk_widget_show_all(sprite->widget);
 	LBL_create_sprite:
 	debug("<<< create_sprite()");
 }
@@ -137,7 +136,7 @@ static gboolean dnd_canvas(
 	(void)time;
 	(void)ud;
 	debug(">>> dnd_canvas()");
-	gtk_drag_finish(ctx, TRUE, TRUE, time);
+	gtk_drag_finish(ctx, TRUE, FALSE, time);
 	debug("<<< dnd_canvas()");
 	return TRUE;
 }
