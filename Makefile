@@ -8,8 +8,8 @@ dir_build=build
 dir_src=src
 dir_include=include
 
-OBJECTS=$(addprefix $(dir_build)/,data.o log.o main.o sprite.o)
-HEADERS=$(addprefix $(dir_include)/,data.h log.h main.h sprite.h)
+OBJECTS=$(addprefix $(dir_build)/,canvas.o data.o log.o main.o sprite.o)
+HEADERS=$(addprefix $(dir_include)/,canvas.h data.h log.h sprite.h)
 
 aout=$(dir_build)/remany
 
