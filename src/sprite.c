@@ -12,16 +12,16 @@ static GtkWidget *make_sprite_bin(const gchar *lbl) {
 	GtkWidget *frame = gtk_frame_new(lbl);
 	if (! frame) {
 		warn("make_sprite_bin(): gtk_frame_new()");
-		goto LBL_make_sprite_bin;
+		goto LBL_return;
 	}
 	GtkWidget *box = (GtkWidget *)gtk_vbox_new(FALSE, 0);
 	if (! box) {
 		warn("make_sprite_bin(): gtk_vbox_new()");
 		gtk_widget_destroy(frame);
-		goto LBL_make_sprite_bin;
+		goto LBL_return;
 	}
 	gtk_container_add((GtkContainer *)frame, box);
-	LBL_make_sprite_bin:
+	LBL_return:
 	debug("<<< make_sprite_bin()");
 	return frame;
 }
@@ -45,7 +45,7 @@ static Sprite *append_sprite_pic(Sprite *s, GdkPixbuf *pic) {
 	GtkWidget *w = gtk_image_new_from_pixbuf(pic);
 	if (w == NULL) {
 		warn("append_sprite_pic(): gtk_image_new_from_pixbuf()");
-		goto LBL_append_sprite_pic;
+		goto LBL_return;
 	}
 	gtk_widget_set_vexpand(w, TRUE);
 	gtk_widget_set_hexpand(w, TRUE);
@@ -65,7 +65,7 @@ static Sprite *append_sprite_pic(Sprite *s, GdkPixbuf *pic) {
 	}
 	gtk_widget_set_size_request(w, (gint)width, (gint)height);
 	append_sprite_widget(s, w);
-	LBL_append_sprite_pic:
+	LBL_return:
 	debug("<<< append_sprite_pic()");
 	return s;
 }
@@ -157,11 +157,11 @@ Sprite *new_sprite(
 	}
 	if (targets == 0) {
 		debug("new_sprite(): no data converted");
-		goto LBL_new_sprite;
+		goto LBL_return;
 	}
 	if ( (s = malloc(sizeof(Sprite))) == NULL ) {
 		warn("new_sprite(): malloc(Sprite)");
-		goto LBL_new_sprite;
+		goto LBL_return;
 	};
 	s->targets = targets;
 	s->time = time;
@@ -171,7 +171,7 @@ Sprite *new_sprite(
 	targets = 0;
 	if ( (s->widget = make_sprite_bin("New Sprite")) == NULL ) {
 		warn("new_sprite(): make_sprite_bin()");
-		goto LBL_new_sprite;
+		goto LBL_return;
 	};
 	if (data_pic) {
 		if (! append_sprite_pic(s, data_pic) ) {
@@ -194,7 +194,7 @@ Sprite *new_sprite(
 		s,
 		(GDestroyNotify)free_sprite
 	);
-	LBL_new_sprite:
+	LBL_return:
 	if (! targets) {
 		if (s->widget) gtk_widget_destroy(s->widget);
 		free(s);

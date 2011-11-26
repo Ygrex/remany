@@ -35,13 +35,13 @@ static gint ctx_targets_types(GdkDragContext *ctx) {
 	list = g_list_first(list);
 	if (!list) {
 		warn("ctx_targets_types(): g_list_first()");
-		goto LBL_ctx_targets_types;
+		goto LBL_return;
 	}
 	/* should fail with len = 0 */
 	GdkAtom *targets = malloc(sizeof(GdkAtom) * len);
 	if (!targets) {
 		warn("ctx_targets_types(): malloc()");
-		goto LBL_ctx_targets_types;
+		goto LBL_return;
 	}
 	GdkAtom *t = targets;
 	do {
@@ -58,7 +58,7 @@ static gint ctx_targets_types(GdkDragContext *ctx) {
 		/* FIXME rich text must be supported */
 		0;
 	free(targets);
-	LBL_ctx_targets_types:
+	LBL_return:
 	debug("<<< ctx_targets_types()");
 	return ret;
 }
@@ -88,12 +88,12 @@ static void create_sprite(
 	Sprite *sprite = new_sprite(data, targets, time, ud);
 	if (sprite == NULL) {
 		warn("create_sprite(): new_sprite()");
-		goto LBL_create_sprite;
+		goto LBL_return;
 	}
 	/* FIXME naive assumption the canvas is of GtkFixed */
 	gtk_fixed_put((GtkFixed *)canvas, sprite->widget, x, y);
 	gtk_widget_show_all(sprite->widget);
-	LBL_create_sprite:
+	LBL_return:
 	debug("<<< create_sprite()");
 }
 /* }}} create_sprite() */
